@@ -187,4 +187,3 @@ void define_control_packet() {
     KSPBoardSendData(details(CPacket)); 
   }
 }
-

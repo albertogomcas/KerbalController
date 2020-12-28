@@ -14,6 +14,7 @@ int get_vessel_data() {
       Handshake();
       clearLCD();
       writeLCD("KerbalController");
+      jumpToLineTwo();
       writeLCD("handshake...");
       break;
     case 1:
@@ -32,6 +33,7 @@ int get_vessel_data() {
       Connected = false;
       clearLCD();
       writeLCD("KerbalController");
+      jumpToLineTwo();
       writeLCD("idle...");
     }    
   }
@@ -102,6 +104,13 @@ struct VesselData
                                 // 3 = RetroGrade //4 = Normal //5 = Antinormal //6 = Radial In
                                 // 7 = Radial Out //8 = Target //9 = Anti-Target //10 = Maneuver node
                                 // Last 4 bits set navball mode. (0=ignore,1=ORBIT,2=SURFACE,3=TARGET)
+    short ProgradePitch;
+    short ProgradeHeading;
+    short ManeuverPitch;
+    short ManeuverHeading;
+    short TargetPitch;
+    short TargetHeading;
+    short NormalHeading;    //62
 };
 
 //create an instance of a VesselData object

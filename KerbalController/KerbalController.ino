@@ -1,8 +1,19 @@
-#include <SoftwareSerial.h>
-SoftwareSerial mySerial(15,14); //pin 14 connected to LCD, 15 unconnected
+
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+
+#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+
 
 //analog pins
-const int pTHROTTLE = A0; //slide pot
+const int pTHROTTLE = A0 ; //slide pot
 const int pTX = A1;       //translation x-axis
 const int pTY = A2;       //translation y-axis
 const int pTZ = A3;       //translation z-axis
@@ -15,8 +26,8 @@ const int pPOWER = 2;       //power switch
 const int pTB = 3;          //translation joystick button
 const int pRB = 4;          //rotation joystick button
 const int latchPin = 8;     //ST_CP - green
-const int dataPin = 11;     //DS - yellow
-const int clockPin = 12;    //SH_CP - blue
+const int dataPin = 30;     //DS - yellow / was 11
+const int clockPin = 25;    //SH_CP - blue / was 12
 const int pMODE = 22;       //mode switch (used for debug mode)
 const int pLCDx = 27;       //toggle switch x (used for LCD display modes)
 const int pLCDy = 24;       //toggle switch y (used for LCD display modes)
@@ -24,9 +35,9 @@ const int pLCDz = 29;       //toggle switch z (used for LCD display modes)
 const int pSAS = 26;        //SAS switch
 const int pRCS = 31;        //RCS switch
 const int pABORT = 28;      //Abort switch (safety switch, active high)
-const int pARM = 30;        //Arm switch (safety switch, active high)
-const int pSTAGE = 32;      //Stage button
-const int pSTAGELED = 33;   //Stage button LED
+const int pARM = 13;        //Arm switch (safety switch, active high) / was 30
+const int pSTAGE = 11;      //Stage button // was 32
+const int pSTAGELED = 12;   //Stage button LED/ was 33
 const int pLIGHTS = 34;     //Lights button
 const int pLIGHTSLED = 35;  //Lights button LED
 const int pLADDER = 36;     //Ladder button (action group 5)
@@ -90,7 +101,7 @@ bool debug = false;
 
 //timing
 const int IDLETIMER = 20000;        //if no message received from KSP for more than 20s, go idle (default 2000)
-const int CONTROLREFRESH = 10;      //send control packet every 10 ms (default 25)
+const int CONTROLREFRESH = 20;      //send control packet every 10 ms (default 25)
 const int stageLedBlinkTime = 500;  //blink staging LED when armed every 500 ms
 
 //variables used in timing
@@ -104,7 +115,7 @@ byte id;
 void setup() {
   
   Serial.begin(38400);  //KSPSerialIO connection
-  mySerial.begin(9600); //LCD connection
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   delay(500);           //wait for LCD boot
   
   //write to LCD
@@ -116,7 +127,7 @@ void setup() {
 
   //Initialize
   controlsInit();   //set all pin modes
-  testLEDS(50);     //blink every LED once to test (with a delay of 10 ms)
+  testLEDS(10);     //blink every LED once to test (with a delay of 10 ms)
   InitTxPackets();  //initialize the serial communication
 }
 
@@ -217,10 +228,12 @@ void loop() {
     if(rb_on){writeLCD("R");} else {writeLCD("r");}
   
     //analog inputs
-    if(!digitalRead(pLCDx) && digitalRead(pLCDy) && digitalRead(pLCDz)){
+    //if(!digitalRead(pLCDx) && digitalRead(pLCDy) && digitalRead(pLCDz)){
+    if (1){
       throttle_value = analogRead(pTHROTTLE);
       char throttle_char[5];
       itoa(throttle_value, throttle_char, 10);
+      jumpToLineTwo();
       writeLCD(throttle_char);
       writeLCD(" ");
     }
@@ -258,6 +271,7 @@ void loop() {
       itoa(rz_value, rz_char, 10);
       writeLCD(rz_char);
     }
+    delay(100);
     //end of debug mode
   }
   else {
