@@ -22,10 +22,9 @@ const int pRY = A5;       //rotation y-axis
 const int pRZ = A6;       //rotation z-axis
 
 //digital pins
-const int pPOWER = 2;       //power switch
 const int pTB = 3;          //translation joystick button
 const int pRB = 4;          //rotation joystick button
-const int latchPin = 8;     //ST_CP - green
+const int latchPin = 28;     //ST_CP - green / was 8
 const int dataPin = 30;     //DS - yellow / was 11
 const int clockPin = 25;    //SH_CP - blue / was 12
 const int pMODE = 22;       //mode switch (used for debug mode)
@@ -34,7 +33,9 @@ const int pLCDy = 24;       //toggle switch y (used for LCD display modes)
 const int pLCDz = 29;       //toggle switch z (used for LCD display modes)
 const int pSAS = 26;        //SAS switch
 const int pRCS = 31;        //RCS switch
-const int pABORT = 28;      //Abort switch (safety switch, active high)
+const int pARMABORT = 10;      //Abort switch (safety switch, active high)
+const int pABORTLED = 9; 
+const int pABORT = 8;
 const int pARM = 13;        //Arm switch (safety switch, active high) / was 30
 const int pSTAGE = 11;      //Stage button // was 32
 const int pSTAGELED = 12;   //Stage button LED/ was 33
@@ -67,6 +68,7 @@ bool gears_on = false;
 bool brakes_on = false;
 bool chutes_on = false;
 bool stage_on = false;
+bool abort_on = false;
 bool action1_on = false;
 bool action2_on = false;
 bool action3_on = false;
@@ -80,8 +82,6 @@ bool rb_on = true;
 bool tb_prev = false;
 bool rb_prev = false;
 
-//stage LED state
-bool stage_led_on = false;
 
 //input value variables
 int throttle_value;
@@ -103,9 +103,10 @@ bool debug = false;
 const int IDLETIMER = 20000;        //if no message received from KSP for more than 20s, go idle (default 2000)
 const int CONTROLREFRESH = 20;      //send control packet every 10 ms (default 25)
 const int stageLedBlinkTime = 500;  //blink staging LED when armed every 500 ms
+const int abortLedBlinkTime = 500;
 
 //variables used in timing
-unsigned long deadtime, deadtimeOld, controlTime, controlTimeOld, stageLedTime, stageLedTimeOld;
+unsigned long deadtime, deadtimeOld, controlTime, controlTimeOld;
 unsigned long now;
 
 //variables used in serial communication
@@ -142,6 +143,7 @@ void loop() {
 
     //previous state tracking only used in debug
     bool stage_prev = false;
+    bool abort_prev = false;
     bool chutes_prev = false;
     bool action1_prev = false;
     bool action2_prev = false;
@@ -159,7 +161,7 @@ void loop() {
     //toggle switches
     if(!digitalRead(pSAS)){writeLCD("S");} else {writeLCD("s");}
     if(!digitalRead(pRCS)){writeLCD("R");} else {writeLCD("r");}
-    if(digitalRead(pABORT)){writeLCD("A");} else {writeLCD("a");} //note abort switch is active high
+    if(digitalRead(pARMABORT)){writeLCD("A");} else {writeLCD("a");} //note abort switch is active high
     if(digitalRead(pARM)){writeLCD("A");} else {writeLCD("a");}   //note arm switch is active high
    
     //in debug mode, handle all buttons as toggle buttons
@@ -168,6 +170,11 @@ void loop() {
     if(digitalRead(pSTAGE) && stage_prev){stage_prev = false;}
     if(stage_on){writeLCD("S");} else {writeLCD("s");}
     digitalWrite(pSTAGELED, stage_on);
+
+    if(!digitalRead(pABORT) && !abort_prev){abort_on = !abort_on; abort_prev = true;}
+    if(digitalRead(pABORT) && abort_prev){abort_prev = false;}
+    if(abort_on){writeLCD("A");} else {writeLCD("a");}
+    digitalWrite(pABORTLED, abort_on);
 
     if(!digitalRead(pLIGHTS) && !lights_prev){lights_on = !lights_on; lights_prev = true;}
     if(digitalRead(pLIGHTS) && lights_prev){lights_prev = false;}

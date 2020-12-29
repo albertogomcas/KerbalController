@@ -6,7 +6,6 @@ void controlsInit() {
   pinMode(pRX, INPUT);
   pinMode(pRY, INPUT);
   pinMode(pRZ, INPUT);
-  pinMode(pPOWER, INPUT_PULLUP);
   pinMode(pTB, INPUT_PULLUP);
   pinMode(pRB, INPUT_PULLUP);
   pinMode(pMODE, INPUT_PULLUP);
@@ -15,7 +14,9 @@ void controlsInit() {
   pinMode(pLCDz, INPUT_PULLUP);
   pinMode(pSAS, INPUT_PULLUP);
   pinMode(pRCS, INPUT_PULLUP);
-  pinMode(pABORT, INPUT);
+  pinMode(pARMABORT, INPUT);
+  pinMode(pABORT, INPUT_PULLUP);
+  pinMode(pABORTLED, OUTPUT);
   pinMode(pARM, INPUT);
   pinMode(pSTAGE, INPUT_PULLUP);
   pinMode(pSTAGELED, OUTPUT);
@@ -48,6 +49,9 @@ void testLEDS(int testdelay){
   digitalWrite(pSTAGELED,HIGH);
   delay(testdelay);
   digitalWrite(pSTAGELED,LOW);
+  digitalWrite(pABORTLED,HIGH);
+  delay(testdelay);
+  digitalWrite(pABORTLED,LOW);
   digitalWrite(pLIGHTSLED,HIGH);
   delay(testdelay);
   digitalWrite(pLIGHTSLED,LOW);

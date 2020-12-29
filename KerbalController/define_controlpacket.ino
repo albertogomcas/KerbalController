@@ -95,26 +95,23 @@ void setNavballMode(byte m) {
 
 
 void define_control_packet() {
+    digitalWrite(pSTAGELED, digitalRead(pARM));
+    digitalWrite(pABORTLED, digitalRead(pARMABORT));
+  
   if (Connected) {
     //here we define what controls to send when which pins are manipulated
     
     //toggle switches
     if(!digitalRead(pSAS)){MainControls(SAS, true);} else {MainControls(SAS, false);}
     if(!digitalRead(pRCS)){MainControls(RCS, true);} else {MainControls(RCS, false);}
-    if(digitalRead(pABORT)){MainControls(ABORT, true);} else {MainControls(ABORT, false);}
+
+    //momentary abort button
+    if(!digitalRead(pABORT) && digitalRead(pARMABORT)){MainControls(ABORT, true);} else {MainControls(ABORT, false);}
+
   
     //momentary stage button
     if(!digitalRead(pSTAGE) && digitalRead(pARM)){MainControls(STAGE, true);} else {MainControls(STAGE, false);}
-    if(digitalRead(pARM)){
-      now = millis();
-      stageLedTime = now - stageLedTimeOld;
-      if (stageLedTime > stageLedBlinkTime) {
-        stageLedTimeOld = now;
-        stage_led_on = !stage_led_on;
-      }
-    }
-    else {stage_led_on = false;}
-    digitalWrite(pSTAGELED, stage_led_on);
+
     
     //toggle buttons
     if(!digitalRead(pLIGHTS)){MainControls(LIGHTS, !lights_on);}
