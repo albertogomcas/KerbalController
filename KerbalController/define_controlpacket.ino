@@ -114,16 +114,18 @@ void define_control_packet() {
 
     
     //toggle buttons
-    if(!digitalRead(pLIGHTS)){MainControls(LIGHTS, !lights_on);}
-    if(!digitalRead(pGEARS)){MainControls(GEARS, !gears_on);}
-    if(!digitalRead(pBRAKES)){MainControls(BRAKES, !brakes_on);}
-    if(!digitalRead(pACTION1)){ControlGroups(1, !action1_on);}
-    if(!digitalRead(pACTION2)){ControlGroups(2, !action2_on);}
-    if(!digitalRead(pACTION3)){ControlGroups(3, !action3_on);}
-    if(!digitalRead(pACTION4)){ControlGroups(4, !action4_on);}
-    if(!digitalRead(pLADDER)){ControlGroups(5, !ladder_on);}
-    if(!digitalRead(pSOLAR)){ControlGroups(6, !solar_on);}
-    if(!digitalRead(pCHUTES)){ControlGroups(7, !chutes_on);}
+    MainControls(LIGHTS, digitalRead(pLIGHTS));
+    MainControls(GEARS, digitalRead(pGEARS));
+    MainControls(BRAKES, digitalRead(pBRAKES));
+    
+    ControlGroups(1, digitalRead(pACTION1));
+    ControlGroups(2, digitalRead(pACTION2));
+    ControlGroups(3, digitalRead(pACTION3));
+    ControlGroups(4, digitalRead(pCHUTES));
+    ControlGroups(5, digitalRead(pSOLAR));
+    ControlGroups(6, digitalRead(pLADDER));
+
+
 
     //throttle
     CPacket.Throttle = constrain(map(analogRead(pTHROTTLE),30,990,0,1023),0,1000);

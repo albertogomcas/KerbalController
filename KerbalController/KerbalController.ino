@@ -39,26 +39,18 @@ const int pABORT = 8;
 const int pARM = 13;        //Arm switch (safety switch, active high) / was 30
 const int pSTAGE = 11;      //Stage button // was 32
 const int pSTAGELED = 12;   //Stage button LED/ was 33
+
+
+const int pCHUTES = 30;     //Chutes button (action group 4)
+const int pGEARS = 32;      //Gears button
 const int pLIGHTS = 34;     //Lights button
-const int pLIGHTSLED = 35;  //Lights button LED
-const int pLADDER = 36;     //Ladder button (action group 5)
-const int pLADDERLED = 37;  //Ladder button LED
-const int pSOLAR = 38;      //Solar button (action group 6)
-const int pSOLARLED = 39;   //Solar button LED
-const int pCHUTES = 40;     //Chutes button (action group 7)
-const int pCHUTESLED = 41;  //Chutes button LED
-const int pGEARS = 42;      //Gears button
-const int pGEARSLED = 43;   //Gears button LED
-const int pBRAKES = 44;     //Brakes button
-const int pBRAKESLED = 45;  //Brakes button LED
-const int pACTION1 = 46;    //Action Group 1 button
-const int pACTION1LED = 47; //Action Group 1 button LED
-const int pACTION2 = 48;    //Action Group 2 button
-const int pACTION2LED = 49; //Action Group 2 button LED
-const int pACTION3 = 50;    //Action Group 3 button
-const int pACTION3LED = 51; //Action Group 3 button LED
-const int pACTION4 = 52;    //Action Group 4 button
-const int pACTION4LED = 53; //Action Group 4 button LED
+const int pSOLAR = 36;      //Solar button (action group 5)
+const int pBRAKES = 38;     //Brakes button
+const int pLADDER = 40;     //Ladder button (action group 6)
+const int pACTION1 = 42;    //Action Group 1 button
+const int pACTION2 = 44;    //Action Group 2 button
+const int pACTION3 = 46;    //Action Group 3 button
+
 
 //in-game state used to update button LEDs
 bool lights_on = false;
@@ -72,7 +64,6 @@ bool abort_on = false;
 bool action1_on = false;
 bool action2_on = false;
 bool action3_on = false;
-bool action4_on = false;
 
 //toggle button states
 bool tb_on = true;
@@ -148,7 +139,6 @@ void loop() {
     bool action1_prev = false;
     bool action2_prev = false;
     bool action3_prev = false;
-    bool action4_prev = false;
     bool lights_prev = false;
     bool ladder_prev = false;
     bool solar_prev = false;
@@ -176,55 +166,16 @@ void loop() {
     if(abort_on){writeLCD("A");} else {writeLCD("a");}
     digitalWrite(pABORTLED, abort_on);
 
-    if(!digitalRead(pLIGHTS) && !lights_prev){lights_on = !lights_on; lights_prev = true;}
-    if(digitalRead(pLIGHTS) && lights_prev){lights_prev = false;}
-    if(lights_on){writeLCD("L");} else {writeLCD("l");}
-    digitalWrite(pLIGHTSLED, lights_on);
-    
-    if(!digitalRead(pLADDER) && !ladder_prev){ladder_on = !ladder_on; ladder_prev = true;}
-    if(digitalRead(pLADDER) && ladder_prev){ladder_prev = false;}
-    if(ladder_on){writeLCD("L");} else {writeLCD("l");}
-    digitalWrite(pLADDERLED, ladder_on);
-    
-    if(!digitalRead(pSOLAR) && !solar_prev){solar_on = !solar_on; solar_prev = true;}
-    if(digitalRead(pSOLAR) && solar_prev){solar_prev = false;}
-    if(solar_on){writeLCD("S");} else {writeLCD("s");}
-    digitalWrite(pSOLARLED, solar_on);
-  
-    if(!digitalRead(pCHUTES) && !chutes_prev){chutes_on = !chutes_on; chutes_prev = true;}
-    if(digitalRead(pCHUTES) && chutes_prev){chutes_prev = false;}
-    if(chutes_on){writeLCD("C");} else {writeLCD("c");}
-    digitalWrite(pCHUTESLED, chutes_on);
-    
-    if(!digitalRead(pGEARS) && !gears_prev){gears_on = !gears_on; gears_prev = true;}
-    if(digitalRead(pGEARS) && gears_prev){gears_prev = false;}
-    if(gears_on){writeLCD("G");} else {writeLCD("g");}
-    digitalWrite(pGEARSLED, gears_on);
-  
-    if(!digitalRead(pBRAKES) && !brakes_prev){brakes_on = !brakes_on; brakes_prev = true;}
-    if(digitalRead(pBRAKES) && brakes_prev){brakes_prev = false;}
-    if(brakes_on){writeLCD("B");} else {writeLCD("b");}
-    digitalWrite(pBRAKESLED, brakes_on);
+    if(digitalRead(pCHUTES))writeLCD("C"); else writeLCD("c");
+    if(digitalRead(pGEARS))writeLCD("G"); else writeLCD("g");
+    if(digitalRead(pLIGHTS))writeLCD("L"); else writeLCD("l");
+    if(digitalRead(pSOLAR))writeLCD("S"); else writeLCD("s");
+    if(digitalRead(pBRAKES))writeLCD("B"); else writeLCD("b");
+    if(digitalRead(pLADDER))writeLCD("L"); else writeLCD("l");
+    if(digitalRead(pACTION1))writeLCD("A"); else writeLCD("a");
+    if(digitalRead(pACTION2))writeLCD("A"); else writeLCD("a");
+    if(digitalRead(pACTION3))writeLCD("A"); else writeLCD("a");
 
-    if(!digitalRead(pACTION1) && !action1_prev){action1_on = !action1_on; action1_prev = true;}
-    if(digitalRead(pACTION1) && action1_prev){action1_prev = false;}
-    if(action1_on){writeLCD("A");} else {writeLCD("a");}
-    digitalWrite(pACTION1LED, action1_on);
-    
-    if(!digitalRead(pACTION2) && !action2_prev){action2_on = !action2_on; action2_prev = true;}
-    if(digitalRead(pACTION2) && action2_prev){action2_prev = false;}
-    if(action2_on){writeLCD("A");} else {writeLCD("a");}
-    digitalWrite(pACTION2LED, action2_on);
-    
-    if(!digitalRead(pACTION3) && !action3_prev){action3_on = !action3_on; action3_prev = true;}
-    if(digitalRead(pACTION3) && action3_prev){action3_prev = false;}
-    if(action3_on){writeLCD("A");} else {writeLCD("a");}
-    digitalWrite(pACTION3LED, action3_on);
-    
-    if(!digitalRead(pACTION4) && !action4_prev){action4_on = !action4_on; action4_prev = true;}
-    if(digitalRead(pACTION4) && action4_prev){action4_prev = false;}
-    if(action4_on){writeLCD("A");} else {writeLCD("a");}
-    digitalWrite(pACTION4LED, action4_on);
     
     if(!digitalRead(pTB) && !tb_prev){tb_on = !tb_on; tb_prev = true;}
     if(digitalRead(pTB) && tb_prev){tb_prev = false;}

@@ -344,22 +344,10 @@ void define_vessel_data_display() {
   action1_on = ControlStatus(AGCustom01);
   action2_on = ControlStatus(AGCustom02);
   action3_on = ControlStatus(AGCustom03);
-  action4_on = ControlStatus(AGCustom04);
   ladder_on = ControlStatus(AGCustom05);
   solar_on = ControlStatus(AGCustom06);
   chutes_on = ControlStatus(AGCustom07);
 
-  //update button LEDs based on in-game status
-  digitalWrite(pLIGHTSLED, lights_on); 
-  digitalWrite(pGEARSLED, gears_on);
-  digitalWrite(pBRAKESLED, brakes_on);
-  digitalWrite(pACTION1LED, action1_on);
-  digitalWrite(pACTION2LED, action2_on);
-  digitalWrite(pACTION3LED, action3_on);
-  digitalWrite(pACTION4LED, action4_on);
-  digitalWrite(pLADDERLED, ladder_on);
-  digitalWrite(pSOLARLED, solar_on);
-  digitalWrite(pCHUTESLED, chutes_on);
 
   //Fuel Gauges
   vSF = 100 * VData.SolidFuel / VData.SolidFuelTot; //percentage of solid fuel remaining
