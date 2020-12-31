@@ -24,9 +24,9 @@ const int pRZ = A6;       //rotation z-axis
 //digital pins
 const int pTB = 3;          //translation joystick button
 const int pRB = 4;          //rotation joystick button
-const int latchPin = 28;     //ST_CP - green / was 8
-const int dataPin = 30;     //DS - yellow / was 11
-const int clockPin = 25;    //SH_CP - blue / was 12
+const int latchPin = 31;     //ST_CP - green / was 8
+const int dataPin = 33;     //DS - yellow / was 11
+const int clockPin = 35;    //SH_CP - blue / was 12
 const int pMODE = 22;       //mode switch (used for debug mode)
 const int pLCDx = 27;       //toggle switch x (used for LCD display modes)
 const int pLCDy = 24;       //toggle switch y (used for LCD display modes)
@@ -52,18 +52,9 @@ const int pACTION2 = 44;    //Action Group 2 button
 const int pACTION3 = 46;    //Action Group 3 button
 
 
-//in-game state used to update button LEDs
-bool lights_on = false;
-bool ladder_on = false;
-bool solar_on = false;
-bool gears_on = false;
-bool brakes_on = false;
-bool chutes_on = false;
 bool stage_on = false;
 bool abort_on = false;
-bool action1_on = false;
-bool action2_on = false;
-bool action3_on = false;
+
 
 //toggle button states
 bool tb_on = true;
@@ -116,6 +107,7 @@ void setup() {
   jumpToLineTwo();
   writeLCD("booting...");
   delay(100);
+  refreshLCD();
 
   //Initialize
   controlsInit();   //set all pin modes
@@ -135,15 +127,6 @@ void loop() {
     //previous state tracking only used in debug
     bool stage_prev = false;
     bool abort_prev = false;
-    bool chutes_prev = false;
-    bool action1_prev = false;
-    bool action2_prev = false;
-    bool action3_prev = false;
-    bool lights_prev = false;
-    bool ladder_prev = false;
-    bool solar_prev = false;
-    bool gears_prev = false;
-    bool brakes_prev = false;
 
     //clear the LCD 
     clearLCD();
@@ -229,6 +212,7 @@ void loop() {
       itoa(rz_value, rz_char, 10);
       writeLCD(rz_char);
     }
+    refreshLCD();
     delay(100);
     //end of debug mode
   }

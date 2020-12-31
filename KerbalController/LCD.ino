@@ -15,7 +15,6 @@ void jumpToStart ()
 {
   //jump to the start of the first line on the LCD
   display.setCursor(0, 0);     // Start at top-left corner
-  display.display();
 }
 
 void jumpToLineTwo ()
@@ -27,6 +26,9 @@ void jumpToLineTwo ()
 void writeLCD (char myText[])
 {
   display.print(myText);
-  display.display();
+}
 
+void refreshLCD()
+{
+  display.display();
 }

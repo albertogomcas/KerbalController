@@ -338,15 +338,8 @@ void define_vessel_data_display() {
   }
   
   //get in-game status for updating the LED statuses on the controller  
-  lights_on = ControlStatus(AGLight);
-  gears_on = ControlStatus(AGGears);
-  brakes_on = ControlStatus(AGBrakes);
-  action1_on = ControlStatus(AGCustom01);
-  action2_on = ControlStatus(AGCustom02);
-  action3_on = ControlStatus(AGCustom03);
-  ladder_on = ControlStatus(AGCustom05);
-  solar_on = ControlStatus(AGCustom06);
-  chutes_on = ControlStatus(AGCustom07);
+  //lights_on = ControlStatus(AGLight);
+
 
 
   //Fuel Gauges
