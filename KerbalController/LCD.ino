@@ -11,16 +11,9 @@ display.setTextColor(SSD1306_WHITE);
 display.setCursor(0, 0);  
 }
 
-void jumpToStart ()
+void LCDline(int line)
 {
-  //jump to the start of the first line on the LCD
-  display.setCursor(0, 0);     // Start at top-left corner
-}
-
-void jumpToLineTwo ()
-{
-  //jump to the start of the second line on the LCD
-  display.setCursor(0, 16);     // Start at top-left corner
+  display.setCursor(0, (line-1) * 12);
 }
 
 void writeLCD (char myText[])

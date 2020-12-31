@@ -13,8 +13,9 @@ int get_vessel_data() {
     case 0: //First packet is a handshake packet
       Handshake();
       clearLCD();
+      LCDline(1);
       writeLCD("KerbalController");
-      jumpToLineTwo();
+      LCDline(2);
       writeLCD("handshake...");
       break;
     case 1:
@@ -33,7 +34,7 @@ int get_vessel_data() {
       Connected = false;
       clearLCD();
       writeLCD("KerbalController");
-      jumpToLineTwo();
+      LCDline(2);
       writeLCD("idle...");
     }    
   }
@@ -170,14 +171,17 @@ void define_vessel_data_display() {
     //MODE 0 : TakeOff Mode
     //Vsurf
     clearLCD();
+    LCDline(1);
+    writeLCD("Take Off");
     char bufferVsurf[17];
     String strVsurf = "Vsurf: ";
     strVsurf += String(VData.Vsurf, 0);
     strVsurf += " m/s";
     strVsurf.toCharArray(bufferVsurf,17);
+    LCDline(2);
     writeLCD(bufferVsurf);
     //Acceleration (G)
-    jumpToLineTwo();
+    LCDline(3);
     char bufferGee[17];
     String strGee = "Accel: ";
     strGee += String(VData.G, 0);
@@ -189,8 +193,10 @@ void define_vessel_data_display() {
   if(!digitalRead(pLCDx) && digitalRead(pLCDy) && digitalRead(pLCDz)){
     //MODE 1: Orbit Mode
     clearLCD();
-    
+    LCDline(1);
+    writeLCD("Orbit");
     //Apoapsis
+    LCDline(2);
     char bufferAP[17];
     String strApo = "AP: ";
     if (VData.AP < 10000 && VData.AP > -10000) {
@@ -212,6 +218,7 @@ void define_vessel_data_display() {
     writeLCD(bufferAP);
     
     //Periapsis
+    LCDline(3);
     char bufferPE[17];
     String strPeri = "PE: ";
     if (VData.PE < 10000 && VData.PE > -10000) {
@@ -230,7 +237,6 @@ void define_vessel_data_display() {
     strPeri += String(VData.TPe); //time to periapsis
     strPeri += "s";
     strPeri.toCharArray(bufferPE,17);
-    jumpToLineTwo();
     writeLCD(bufferPE);
   }
 
@@ -238,13 +244,16 @@ void define_vessel_data_display() {
     //MODE 2: Maneuver Mode
     //MNTime
     clearLCD();
+    LCDline(1);
+    writeLCD("Maneuver");
     char t[10];
+    LCDline(2);
     dtostrf(VData.MNTime,8,0,t);
     writeLCD("Tnode: ");
     writeLCD(t);
     writeLCD("s");
     //MNDeltaV
-    jumpToLineTwo();
+    LCDline(3);
     char bufferMNDeltaV[17];
     String strMNDeltaV = "dV: ";
     strMNDeltaV += String(VData.MNDeltaV, 0);
@@ -257,6 +266,9 @@ void define_vessel_data_display() {
     //MODE 3: Rendezvouz Mode
     //Target Distance
     clearLCD();
+    LCDline(1);
+    writeLCD("Rendezvous");
+    LCDline(2);
     char bufferTargetDist[17];
     String strTargetDist = "TDist: ";
     strTargetDist += String(VData.TargetDist, 0);
@@ -264,7 +276,7 @@ void define_vessel_data_display() {
     strTargetDist.toCharArray(bufferTargetDist,17);
     writeLCD(bufferTargetDist);
     //Target Velocity
-    jumpToLineTwo();
+    LCDline(3);
     char bufferTargetV[17];
     String strTargetV = "TVel: ";
     strTargetV += String(VData.TargetV, 0);
@@ -277,13 +289,16 @@ void define_vessel_data_display() {
     //MODE 4: Re-Entry Mode
     //MaxOverHeat
     clearLCD();
+    LCDline(1);
+    writeLCD("Re-Entry");
+    LCDline(2);
     char t[3];
     dtostrf(VData.MaxOverHeat,3,0,t);
     writeLCD("Heat: ");
     writeLCD(t);
     writeLCD("%");
     //Acceleration (G)
-    jumpToLineTwo();
+    LCDline(3);
     char bufferGee[17];
     String strGee = "Decel: ";
     strGee += String(VData.G, 0);
@@ -296,6 +311,9 @@ void define_vessel_data_display() {
     //MODE 5: Flying Mode
     //Alt
     clearLCD();
+    LCDline(1);
+    writeLCD("Flying");
+    LCDline(2);
     char bufferAtl[17];
     String strAlt = "Alt:  ";
     strAlt += String(VData.Alt, 0);
@@ -303,7 +321,7 @@ void define_vessel_data_display() {
     strAlt.toCharArray(bufferAtl,17);
     writeLCD(bufferAtl);
     //Mach Number
-    jumpToLineTwo();
+    LCDline(3);
     char bufferMachNumber[17];
     String strMach = "Mach:";
     strMach += String(VData.G, 0);
@@ -315,6 +333,9 @@ void define_vessel_data_display() {
     //MODE 6: Landing Mode
     //RAlt
     clearLCD();
+    LCDline(1);
+    writeLCD("Landing");
+    LCDline(1);
     char bufferRAtl[17];
     String strRAlt = "RAlt: ";
     strRAlt += String(VData.RAlt, 0);
@@ -322,7 +343,7 @@ void define_vessel_data_display() {
     strRAlt.toCharArray(bufferRAtl,17);
     writeLCD(bufferRAtl);
     //Vertical Velocity
-    jumpToLineTwo();
+    LCDline(3);
     char bufferVVI[17];
     String strVVI = "VVI:  ";
     strVVI += String(VData.VVI, 0);

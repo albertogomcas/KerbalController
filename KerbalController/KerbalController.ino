@@ -103,8 +103,9 @@ void setup() {
   
   //write to LCD
   clearLCD();
+  LCDline(1);
   writeLCD("KerbalController");
-  jumpToLineTwo();
+  LCDline(2);
   writeLCD("booting...");
   delay(100);
   refreshLCD();
@@ -130,8 +131,9 @@ void loop() {
 
     //clear the LCD 
     clearLCD();
-    
-    //toggle switches
+
+    LCDline(1);
+     //toggle switches
     if(!digitalRead(pSAS)){writeLCD("S");} else {writeLCD("s");}
     if(!digitalRead(pRCS)){writeLCD("R");} else {writeLCD("r");}
     if(digitalRead(pARMABORT)){writeLCD("A");} else {writeLCD("a");} //note abort switch is active high
@@ -149,6 +151,8 @@ void loop() {
     if(abort_on){writeLCD("A");} else {writeLCD("a");}
     digitalWrite(pABORTLED, abort_on);
 
+
+    LCDline(2);
     if(digitalRead(pCHUTES))writeLCD("C"); else writeLCD("c");
     if(digitalRead(pGEARS))writeLCD("G"); else writeLCD("g");
     if(digitalRead(pLIGHTS))writeLCD("L"); else writeLCD("l");
@@ -169,12 +173,12 @@ void loop() {
     if(rb_on){writeLCD("R");} else {writeLCD("r");}
   
     //analog inputs
+    LCDline(3);
     //if(!digitalRead(pLCDx) && digitalRead(pLCDy) && digitalRead(pLCDz)){
     if (1){
       throttle_value = analogRead(pTHROTTLE);
       char throttle_char[5];
       itoa(throttle_value, throttle_char, 10);
-      jumpToLineTwo();
       writeLCD(throttle_char);
       writeLCD(" ");
     }
