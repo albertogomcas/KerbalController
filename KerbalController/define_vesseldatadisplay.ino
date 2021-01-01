@@ -17,6 +17,7 @@ int get_vessel_data() {
       writeLCD("KerbalController");
       LCDline(2);
       writeLCD("handshake...");
+      push_sync = false;
       break;
     case 1:
       //subsequent packets are data from the plugin
@@ -167,7 +168,15 @@ void define_vessel_data_display() {
   // 6 xYZ Landing Mode:     Radar Altitude / Vertical Velocity
   // 7 XYZ Extra Mode:       not implemented (yet)
 
-  if(digitalRead(pLCDx) && digitalRead(pLCDy) && digitalRead(pLCDz)){
+  static int lcd_mode = 0;
+
+  if (digitalRead(pLCDUP)) lcd_mode++;
+  if (digitalRead(pLCDDOWN)) lcd_mode--;
+
+  if (lcd_mode < 0) lcd_mode = 7;
+  if (lcd_mode > 7) lcd_mode = 0;
+
+  if(lcd_mode == 0){
     //MODE 0 : TakeOff Mode
     //Vsurf
     clearLCD();
@@ -190,7 +199,7 @@ void define_vessel_data_display() {
     writeLCD(bufferGee);
   }
   
-  if(!digitalRead(pLCDx) && digitalRead(pLCDy) && digitalRead(pLCDz)){
+  if(lcd_mode == 1){
     //MODE 1: Orbit Mode
     clearLCD();
     LCDline(1);
@@ -240,7 +249,7 @@ void define_vessel_data_display() {
     writeLCD(bufferPE);
   }
 
-  if(digitalRead(pLCDx) && !digitalRead(pLCDy) && digitalRead(pLCDz)){
+  if(lcd_mode == 2){
     //MODE 2: Maneuver Mode
     //MNTime
     clearLCD();
@@ -262,7 +271,7 @@ void define_vessel_data_display() {
     writeLCD(bufferMNDeltaV);
   }
 
-  if(!digitalRead(pLCDx) && !digitalRead(pLCDy) && digitalRead(pLCDz)){
+  if(lcd_mode == 3){
     //MODE 3: Rendezvouz Mode
     //Target Distance
     clearLCD();
@@ -285,7 +294,7 @@ void define_vessel_data_display() {
     writeLCD(bufferTargetV);
   }
 
-  if(digitalRead(pLCDx) && digitalRead(pLCDy) && !digitalRead(pLCDz)){
+  if(lcd_mode == 4){
     //MODE 4: Re-Entry Mode
     //MaxOverHeat
     clearLCD();
@@ -307,7 +316,7 @@ void define_vessel_data_display() {
     writeLCD(bufferGee);
   }
 
-  if(!digitalRead(pLCDx) && digitalRead(pLCDy) && !digitalRead(pLCDz)){
+  if(lcd_mode == 5){
     //MODE 5: Flying Mode
     //Alt
     clearLCD();
@@ -329,13 +338,13 @@ void define_vessel_data_display() {
     writeLCD(bufferMachNumber);
   }
 
-  if(digitalRead(pLCDx) && !digitalRead(pLCDy) && !digitalRead(pLCDz)){
+  if(lcd_mode == 6){
     //MODE 6: Landing Mode
     //RAlt
     clearLCD();
     LCDline(1);
     writeLCD("Landing");
-    LCDline(1);
+    LCDline(2);
     char bufferRAtl[17];
     String strRAlt = "RAlt: ";
     strRAlt += String(VData.RAlt, 0);
@@ -352,11 +361,22 @@ void define_vessel_data_display() {
     writeLCD(bufferVVI);
   }
 
-  if(!digitalRead(pLCDx) && !digitalRead(pLCDy) && !digitalRead(pLCDz)){
+  if(lcd_mode == 7){
     //MODE 7: Extra Mode
     clearLCD();
     writeLCD("KerbalController");
   }
+
+  if (!push_sync){
+    digitalWrite(pSYNCLED, HIGH);
+    clearLCD();
+    writeLCD("CHECK BUTTONS");
+    LCDline(2);
+    writeLCD("Press sync when ready");
+
+  }
+  
+  refreshLCD();
   
   //get in-game status for updating the LED statuses on the controller  
   //lights_on = ControlStatus(AGLight);

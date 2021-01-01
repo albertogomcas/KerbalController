@@ -8,10 +8,12 @@ void controlsInit() {
   pinMode(pRZ, INPUT);
   pinMode(pTB, INPUT_PULLUP);
   pinMode(pRB, INPUT_PULLUP);
-  pinMode(pMODE, INPUT_PULLUP);
-  pinMode(pLCDx, INPUT_PULLUP);
-  pinMode(pLCDy, INPUT_PULLUP);
-  pinMode(pLCDz, INPUT_PULLUP);
+
+  pinMode(pLCDUP, INPUT_PULLUP);
+  pinMode(pLCDDOWN, INPUT_PULLUP);
+  pinMode(pSYNCBT, INPUT_PULLUP);
+  pinMode(pSYNCLED, OUTPUT);
+   
   pinMode(pSAS, INPUT_PULLUP);
   pinMode(pRCS, INPUT_PULLUP);
   pinMode(pARMABORT, INPUT);
@@ -41,6 +43,10 @@ void testLEDS(int testdelay){
   digitalWrite(pABORTLED,HIGH);
   delay(testdelay);
   digitalWrite(pABORTLED,LOW);
+
+  digitalWrite(pSYNCLED,HIGH);
+  delay(testdelay);
+  digitalWrite(pSYNCLED,LOW);
  
   //prepare the shift register
   digitalWrite(dataPin, LOW);

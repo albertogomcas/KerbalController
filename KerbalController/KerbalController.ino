@@ -27,10 +27,13 @@ const int pRB = 4;          //rotation joystick button
 const int latchPin = 31;     //ST_CP - green / was 8
 const int dataPin = 33;     //DS - yellow / was 11
 const int clockPin = 35;    //SH_CP - blue / was 12
-const int pMODE = 22;       //mode switch (used for debug mode)
-const int pLCDx = 27;       //toggle switch x (used for LCD display modes)
-const int pLCDy = 24;       //toggle switch y (used for LCD display modes)
-const int pLCDz = 29;       //toggle switch z (used for LCD display modes)
+
+const int pLCDUP = 23;
+const int pLCDDOWN = 27;
+const int pSYNCBT = 25;
+const int pSYNCLED = 29;
+
+
 const int pSAS = 26;        //SAS switch
 const int pRCS = 31;        //RCS switch
 const int pARMABORT = 10;      //Abort switch (safety switch, active high)
@@ -80,6 +83,7 @@ int vSF, vLF, vOX, vEL, vMP, SF, LF, OX, EL, MP;
 
 //debug variable
 bool debug = false;
+int debug_screen = 0;
 
 //timing
 const int IDLETIMER = 20000;        //if no message received from KSP for more than 20s, go idle (default 2000)
@@ -116,11 +120,27 @@ void setup() {
   InitTxPackets();  //initialize the serial communication
 }
 
+
+void check_debug(){
+  //check mode
+  if (!digitalRead(pSYNCBT) && !digitalRead(pLCDUP))
+  {
+    debug = !debug;
+    delay(1000); // long wait to prevent bounces
+    clearLCD();
+    writeLCD("DEBUG");
+    LCDline(2);
+    if (debug) writeLCD("ON");
+    else writeLCD("OFF");
+    refreshLCD();
+    delay(100);
+  }
+}
+
 void loop() {
   
-  //check mode
-  if(!digitalRead(pMODE)){debug = true;} else {debug = false;}
-
+  check_debug();
+  
   if(debug){
     //Debug mode does not communicate with KSPSerialIO, but simply displays the button states on the LCD.
     //Select analog input using LCDx/y/z. Xyz = Throttle. xYz = Translation. xyZ = Rotation.
@@ -128,6 +148,12 @@ void loop() {
     //previous state tracking only used in debug
     bool stage_prev = false;
     bool abort_prev = false;
+
+    if (digitalRead(pLCDUP)) debug_screen++;
+    if (digitalRead(pLCDDOWN)) debug_screen--;
+
+    if (debug_screen < 0) debug_screen = 2;
+    if (debug_screen > 2) debug_screen = 0;
 
     //clear the LCD 
     clearLCD();
@@ -174,18 +200,18 @@ void loop() {
   
     //analog inputs
     LCDline(3);
-    //if(!digitalRead(pLCDx) && digitalRead(pLCDy) && digitalRead(pLCDz)){
-    if (1){
+    if (debug_screen == 0){
       throttle_value = analogRead(pTHROTTLE);
       char throttle_char[5];
       itoa(throttle_value, throttle_char, 10);
+      writeLCD("Throttle ");
       writeLCD(throttle_char);
-      writeLCD(" ");
     }
-    if(digitalRead(pLCDx) && !digitalRead(pLCDy) && digitalRead(pLCDz)){
+    if (debug_screen == 1){
       tx_value = analogRead(pTX);
       char tx_char[5];
       itoa(tx_value, tx_char, 10);
+      writeLCD("Trans ");
       writeLCD(tx_char);
       writeLCD(" ");
       ty_value = analogRead(pTY);
@@ -199,11 +225,12 @@ void loop() {
       writeLCD(tz_char);
       writeLCD(" ");
     }
-     
-    if(digitalRead(pLCDx) && digitalRead(pLCDy) && !digitalRead(pLCDz)){ 
+
+    if(debug_screen == 2){ 
       rx_value = analogRead(pRX);
       char rx_char[5];
       itoa(rx_value, rx_char, 10);
+      writeLCD("Rot ");
       writeLCD(rx_char);
       writeLCD(" ");    
       ry_value = analogRead(pRY);

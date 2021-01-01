@@ -94,9 +94,16 @@ void setNavballMode(byte m) {
 }
 
 
+bool push_sync = false;
+
 void define_control_packet() {
     digitalWrite(pSTAGELED, digitalRead(pARM));
     digitalWrite(pABORTLED, digitalRead(pARMABORT));
+
+    if (!digitalRead(pSYNCBT)){
+      push_sync = true;
+      digitalWrite(pSYNCLED, LOW);
+    }
   
   if (Connected) {
     //here we define what controls to send when which pins are manipulated
@@ -183,6 +190,6 @@ void define_control_packet() {
     //    }
 
     //send the control packet to the KSPSerialIO plugin
-    KSPBoardSendData(details(CPacket)); 
+    if (push_sync) KSPBoardSendData(details(CPacket)); 
   }
 }
