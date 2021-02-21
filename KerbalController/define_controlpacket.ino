@@ -1,3 +1,18 @@
+#define RZMID  55
+#define RZDEAD 10
+#define RYMID 520
+#define RYDEAD 20
+#define RXMID 537
+#define RXDEAD 20
+
+#define TXMID 540
+#define TXDEAD 20
+#define TYMID 521
+#define TYDEAD 20
+#define TZMID 38
+#define TZDEAD 10
+
+
 //Define what controls to send to KSP
 
 //check if it is time to send a control packet
@@ -132,7 +147,7 @@ void define_control_packet() {
     ControlGroups(5, digitalRead(pSOLAR));
     ControlGroups(6, digitalRead(pLADDER));
 
-
+    setSASMode(SMSAS);
 
     //throttle
     CPacket.Throttle = constrain(map(analogRead(pTHROTTLE),30,990,0,1023),0,1000);
@@ -143,36 +158,36 @@ void define_control_packet() {
     
     if(rb_on){
       //rocket mode
-      if(analogRead(pRX) >= 530){CPacket.Yaw = constrain(map(analogRead(pRX),1023,530,-1000,0),-1000,0);}
-      else if(analogRead(pRX) <= 470){CPacket.Yaw = constrain(map(analogRead(pRX),470,0,0,1000),0,1000);}
+      if(analogRead(pRX) >= RXMID + RXDEAD){CPacket.Yaw = constrain(map(analogRead(pRX),1023,RXMID,-1000,0),-1000,1000);}
+      else if(analogRead(pRX) <= RXMID - RXDEAD){CPacket.Yaw = constrain(map(analogRead(pRX),RXMID,0,0,1000),-1000,1000);}
       else {CPacket.Yaw = 0;}
-      if(analogRead(pRY) >= 530){CPacket.Pitch = constrain(map(analogRead(pRY),530,1023,0,1000),0,1000);}
-      else if(analogRead(pRY) <= 470){CPacket.Pitch = constrain(map(analogRead(pRY),0,470,-1000,0),-1000,0);}
+      if(analogRead(pRY) >= RYMID + RYDEAD){CPacket.Pitch = constrain(map(analogRead(pRY),RYMID,1023,0,1000),-1000,1000);}
+      else if(analogRead(pRY) <= RYMID-RYDEAD){CPacket.Pitch = constrain(map(analogRead(pRY),0,RYMID, -1000,0),-1000,1000);}
       else {CPacket.Pitch = 0;}
-      if(analogRead(pRZ) <= 40){CPacket.Roll = constrain(map(analogRead(pRZ),0,40,-1000,0),-1000,0);}
-      else if(analogRead(pRZ) >= 60){CPacket.Roll = constrain(map(analogRead(pRZ),60,500,0,1000),0,1000);}
+      if(analogRead(pRZ) <= RZMID - RZDEAD){CPacket.Roll = constrain(map(analogRead(pRZ),0,RZMID,-1000,0),-1000,1000);}
+      else if(analogRead(pRZ) >= RZMID + RZDEAD){CPacket.Roll = constrain(map(analogRead(pRZ),RZMID,500,0,1000),-1000,1000);}
       else {CPacket.Roll = 0;}
 
-      if(analogRead(pTX) >= 530){CPacket.TX = constrain(map(analogRead(pTX),1023,530,0,1000),0,1000);}
-      else if(analogRead(pTX) <= 470){CPacket.TX = constrain(map(analogRead(pTX),470,0,-1000,0),-1000,0);}
+      if(analogRead(pTX) >= TXMID + TXDEAD){CPacket.TX = constrain(map(analogRead(pTX),1023,TXMID,0,-1000),-1000,1000);}
+      else if(analogRead(pTX) <= TXMID - TXDEAD){CPacket.TX = constrain(map(analogRead(pTX),TXMID,0,1000,0),-1000,1000);}
       else {CPacket.TX = 0;}
-      if(analogRead(pTY) >= 530){CPacket.TY = constrain(map(analogRead(pTY),1023,530,-1000,0),-1000,0);}
-      else if(analogRead(pTY) <= 470){CPacket.TY = constrain(map(analogRead(pTY),470,0,0,1000),0,1000);}
+      if(analogRead(pTY) >= TYMID + TYDEAD){CPacket.TY = constrain(map(analogRead(pTY),1023,TYMID,-1000,0),-1000,1000);}
+      else if(analogRead(pTY) <= TYMID - TYDEAD){CPacket.TY = constrain(map(analogRead(pTY),TYMID,0,0,1000),-1000,1000);}
       else {CPacket.TY = 0;}
-      if(analogRead(pTZ) <= 60){CPacket.TZ = constrain(map(analogRead(pTZ),0,60,-1000,0),-1000,0);}
-      else if(analogRead(pTZ) >= 90){CPacket.TZ = constrain(map(analogRead(pTZ),90,500,0,1000),0,1000);}
+      if(analogRead(pTZ) <= TZMID - TZDEAD){CPacket.TZ = constrain(map(analogRead(pTZ),0,TZMID,-1000,0),-1000,10000);}
+      else if(analogRead(pTZ) >= TZMID + TZDEAD){CPacket.TZ = constrain(map(analogRead(pTZ),TZMID,500,0,1000),-1000,1000);}
       else {CPacket.TZ = 0;}
     }
     else {
       //airplane mode
-      if(analogRead(pRX) >= 530){CPacket.Roll = constrain(map(analogRead(pRX),1023,530,-1000,0),-1000,0);}
-      else if(analogRead(pRX) <= 470){CPacket.Roll = constrain(map(analogRead(pRX),470,0,0,1000),0,1000);}
+      if(analogRead(pRX) >= RXMID + RXDEAD){CPacket.Roll = constrain(map(analogRead(pRX),1023,RXMID,1000,0),-1000,1000);}
+      else if(analogRead(pRX) <= RXMID - RXDEAD){CPacket.Roll = constrain(map(analogRead(pRX),RXMID,0,0,-1000),-1000,1000);}
       else {CPacket.Yaw = 0;}
-      if(analogRead(pRY) >= 530){CPacket.Pitch = constrain(map(analogRead(pRY),530,1023,0,1000),0,1000);}
-      else if(analogRead(pRY) <= 470){CPacket.Pitch = constrain(map(analogRead(pRY),0,470,-1000,0),-1000,0);}
+      if(analogRead(pRY) >= RYMID + RYDEAD){CPacket.Pitch = constrain(map(analogRead(pRY),RYMID,1023,0,1000),-1000,1000);}
+      else if(analogRead(pRY) <= RYMID - RYDEAD){CPacket.Pitch = constrain(map(analogRead(pRY),0,RYMID,-1000,0),-1000,1000);}
       else {CPacket.Pitch = 0;}
-      if(analogRead(pTX) >= 530){CPacket.Yaw = constrain(map(analogRead(pTX),1023,530,-1000,0),-1000,0);}
-      else if(analogRead(pTX) <= 470){CPacket.Yaw = constrain(map(analogRead(pTX),470,0,0,1000),0,1000);}
+      if(analogRead(pTX) >= TXMID + TXDEAD){CPacket.Yaw = constrain(map(analogRead(pTX),1023,TXMID,-1000,0),-1000,1000);}
+      else if(analogRead(pTX) <= TXMID - TXDEAD){CPacket.Yaw = constrain(map(analogRead(pTX),TXMID,0,0,1000),-1000,1000);}
       else {CPacket.Yaw = 0;}
       CPacket.TX = 0;
       CPacket.TY = 0;
